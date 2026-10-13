@@ -48,11 +48,28 @@
         const durationMs = Math.floor(Math.random() * 2000) + 3000;
         const durationSec = (durationMs / 1000).toFixed(2);
         
-        // Rotação: 3 a 5 voltas completas + um ângulo completamente aleatório de 0 a 359 graus
-        const randomAngle = Math.floor(Math.random() * 360);
+        // Descobre a posição atual da roleta (0 a 359 graus)
+        const currentAngle = rotation % 360;
+        let randomAngle;
+        
+        // Garante que o novo ângulo fique a pelo menos 20 graus de distância do ângulo atual.
+        // Como cada fatia de 10 prêmios tem 36 graus, o ponteiro pode cair na mesma fatia
+        // em um ponto ligeiramente diferente, mantendo os 10% de chance para cada prêmio.
+        do {
+            randomAngle = Math.floor(Math.random() * 360);
+        } while (
+            Math.abs(randomAngle - currentAngle) < 20 || 
+            Math.abs(randomAngle - currentAngle) > 340
+        );
+        
+        // Calcula a diferença para chegar no novo ângulo gerado
+        const delta = (randomAngle - currentAngle + 360) % 360;
+        
+        // 3 a 5 voltas completas
         const extraSpins = (3 + Math.floor(Math.random() * 3)) * 360; 
         
-        rotation += extraSpins + randomAngle;
+        // Aplica a nova rotação total
+        rotation += extraSpins + delta;
         
         busy = true;
         spin.disabled = true;
@@ -75,7 +92,7 @@
         // Aguarda o tempo da transição para liberar o botão novamente
         wheel.addEventListener('transitionend', finish);
         
-        // Um pequeno fallback de segurança caso o evento transitionend falhe
+        // Fallback de segurança
         setTimeout(finish, durationMs + 200);
     });
 })();
