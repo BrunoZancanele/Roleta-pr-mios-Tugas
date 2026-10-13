@@ -1,4 +1,79 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000"><title>Roleta de Prêmios</title><style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#000;color:#fff;font-family:system-ui,Arial,sans-serif}body{min-height:100svh;display:flex;flex-direction:column}header{text-align:center;padding:18px 14px 5px}.logo-placeholder{width:min(58vw,220px);height:58px;margin:auto;display:flex;align-items:center;justify-content:center;border:1px dashed #555;border-radius:7px;color:#aaa;font-size:.75rem;font-weight:800;letter-spacing:.1em}.logo{display:block;max-width:72vw;max-height:76px;object-fit:contain;margin:auto}h1{font-size:clamp(1.25rem,4.6vw,2rem);margin:12px 0 0;line-height:1.15}main{width:100%;max-width:760px;margin:auto;padding:12px 18px max(22px,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:clamp(14px,2.5vh,22px)}.subtitle{text-align:center;color:#ccc;margin:0;font-size:.95rem}.wheel-wrap{position:relative;width:min(86vw,61svh,540px);aspect-ratio:1;flex-shrink:0}#wheel{width:100%;height:100%;display:block;object-fit:contain;border-radius:50%;box-shadow:0 0 0 3px #252525,0 0 25px #fff1}.pointer{position:absolute;z-index:2;left:50%;top:-4px;transform:translateX(-50%);width:0;height:0;border-left:clamp(14px,3.5vw,20px) solid transparent;border-right:clamp(14px,3.5vw,20px) solid transparent;border-top:clamp(29px,7vw,42px) solid white;filter:drop-shadow(0 2px 4px #000)}button{width:min(100%,420px);min-height:58px;border:0;border-radius:13px;background:white;color:#000;font:800 1.05rem system-ui,sans-serif;letter-spacing:.04em;padding:14px 20px;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.5}.result{width:min(100%,480px);min-height:74px;border:1px solid #383838;border-radius:13px;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:12px;text-align:center}.eyebrow{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:#aaa;font-weight:800}#resultText{font-size:clamp(1.15rem,4vw,1.6rem);line-height:1.2;font-weight:800;overflow-wrap:anywhere}.setup{color:#777;font-size:.78rem;text-underline-offset:3px}.error{background:#270c0c;border:1px solid #6c2929;color:#ffd3d3;border-radius:12px;padding:13px;text-align:center;line-height:1.45} [hidden]{display:none!important}@media(min-width:700px) and (min-height:700px){.wheel-wrap{width:min(58vw,53svh,520px)}}@media(max-height:620px) and (orientation:landscape){header{padding:6px}.logo-placeholder{height:34px;width:150px}h1{font-size:1.1rem;margin-top:5px}.subtitle{display:none}main{padding:5px 14px;display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,.8fr);gap:12px;max-width:900px}.wheel-wrap{width:min(55vw,68svh,430px);grid-row:span 3}button,.result{width:100%}}
-</style></head><body><header><div id="logoSlot" class="logo-placeholder">LOGO DO CLIENTE</div><h1>Roleta de Prêmios</h1></header><main><p class="subtitle">Toque no botão para girar e descobrir seu prêmio.</p><div id="error" class="error" hidden></div><div id="wheelWrap" class="wheel-wrap" hidden><div class="pointer" aria-hidden="true"></div><img id="wheel" alt="Roleta de cinco prêmios"></div><button id="spin" disabled>GIRAR A ROLETA</button><div class="result" aria-live="polite" aria-atomic="true"><span class="eyebrow">Seu resultado</span><strong id="resultText">Boa sorte!</strong></div><a class="setup" href="index.html">Configurações</a></main>
-<script>(()=>{const K='roletaPremiosConfigV2',wheel=document.getElementById('wheel'),wrap=document.getElementById('wheelWrap'),spin=document.getElementById('spin'),result=document.getElementById('resultText'),error=document.getElementById('error');let cfg=null,prizes=[],rotation=0,busy=false;try{cfg=JSON.parse(localStorage.getItem(K)||'null')}catch(e){}if(!cfg?.imageData){error.hidden=false;error.textContent='Esta roleta ainda não foi configurada neste dispositivo. Abra Configurações, envie a arte, cadastre os cinco prêmios e salve.';result.textContent='Configuração necessária'}else{prizes=(cfg.prizes||[]).slice(0,5);while(prizes.length<5)prizes.push(`Prêmio ${prizes.length+1}`);wheel.src=cfg.imageData;wrap.hidden=false;spin.disabled=false}spin.addEventListener('click',()=>{if(busy||!cfg?.imageData)return;const chosen=Math.floor(Math.random()*5),offset=Number(cfg.offset)||0,center=chosen*72+36,target=((360-center-offset)%360+360)%360,current=((rotation%360)+360)%360,delta=((target-current)%360+360)%360;rotation+= (5+Math.floor(Math.random()*3))*360+delta;busy=true;spin.disabled=true;spin.textContent='GIRANDO…';result.textContent='Boa sorte!';wheel.style.transition='transform 5s cubic-bezier(.12,.72,.12,1)';wheel.style.transform=`rotate(${rotation+offset}deg)`;let finished=false;const finish=()=>{if(finished)return;finished=true;wheel.removeEventListener('transitionend',finish);busy=false;spin.disabled=false;spin.textContent='GIRAR NOVAMENTE';result.textContent=prizes[chosen]};wheel.addEventListener('transitionend',finish);setTimeout(finish,5400)})})();</script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000">
+<title>Roleta de Prêmios</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#000;color:#fff;font-family:system-ui,Arial,sans-serif}body{min-height:100svh;display:flex;flex-direction:column}header{text-align:center;padding:18px 14px 5px}.logo{display:block;max-width:72vw;max-height:76px;object-fit:contain;margin:auto}h1{font-size:clamp(1.25rem,4.6vw,2rem);margin:12px 0 0;line-height:1.15}main{width:100%;max-width:760px;margin:auto;padding:12px 18px max(22px,env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:clamp(14px,2.5vh,22px)}.subtitle{text-align:center;color:#ccc;margin:0;font-size:.95rem}.wheel-wrap{position:relative;width:min(86vw,61svh,540px);aspect-ratio:1;flex-shrink:0}#wheel{width:100%;height:100%;display:block;object-fit:contain;border-radius:50%;box-shadow:0 0 0 3px #252525,0 0 25px #fff1}.pointer{position:absolute;z-index:2;left:50%;top:-4px;transform:translateX(-50%);width:0;height:0;border-left:clamp(14px,3.5vw,20px) solid transparent;border-right:clamp(14px,3.5vw,20px) solid transparent;border-top:clamp(29px,7vw,42px) solid white;filter:drop-shadow(0 2px 4px #000)}button{width:min(100%,420px);min-height:58px;border:0;border-radius:13px;background:white;color:#000;font:800 1.05rem system-ui,sans-serif;letter-spacing:.04em;padding:14px 20px;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.5}.setup{color:#777;font-size:.78rem;text-underline-offset:3px} [hidden]{display:none!important}@media(min-width:700px) and (min-height:700px){.wheel-wrap{width:min(58vw,53svh,520px)}}@media(max-height:620px) and (orientation:landscape){header{padding:6px}h1{font-size:1.1rem;margin-top:5px}.subtitle{display:none}main{padding:5px 14px;display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,.8fr);gap:12px;max-width:900px}.wheel-wrap{width:min(55vw,68svh,430px);grid-row:span 3}button{width:100%}}
+</style>
+</head>
+<body>
+<header>
+    <!-- Substituição pela tag de imagem da logo -->
+    <img src="logo.png" alt="Logo do Cliente" class="logo">
+    <h1>Roleta de Prêmios</h1>
+</header>
+<main>
+    <p class="subtitle">Toque no botão para girar e descobrir seu prêmio.</p>
+    
+    <div id="wheelWrap" class="wheel-wrap">
+        <div class="pointer" aria-hidden="true"></div>
+        <!-- Busca diretamente a imagem roleta.png -->
+        <img id="wheel" src="roleta.png" alt="Roleta de prêmios">
+    </div>
+    
+    <button id="spin">GIRAR A ROLETA</button>
+    
+    <a class="setup" href="index.html">Configurações (Alinhamento)</a>
+</main>
+
+<script>
+(()=>{
+    const K='roletaPremiosConfigV2',
+          wheel=document.getElementById('wheel'),
+          spin=document.getElementById('spin');
+    
+    let cfg=null, rotation=0, busy=false;
+    
+    try {
+        cfg=JSON.parse(localStorage.getItem(K)||'null');
+    } catch(e) {}
+
+    spin.addEventListener('click', () => {
+        if(busy) return;
+        
+        // Mantém a lógica de 5 fatias para alinhar o ponteiro perfeitamente
+        const chosen = Math.floor(Math.random()*5);
+        const offset = Number(cfg?.offset) || 0;
+        const center = chosen * 72 + 36;
+        const target = ((360 - center - offset) % 360 + 360) % 360;
+        const current = ((rotation % 360) + 360) % 360;
+        const delta = ((target - current) % 360 + 360) % 360;
+        
+        rotation += (5 + Math.floor(Math.random()*3)) * 360 + delta;
+        busy = true;
+        spin.disabled = true;
+        spin.textContent = 'GIRANDO…';
+        
+        wheel.style.transition = 'transform 5s cubic-bezier(.12,.72,.12,1)';
+        wheel.style.transform = `rotate(${rotation+offset}deg)`;
+        
+        let finished = false;
+        const finish = () => {
+            if(finished) return;
+            finished = true;
+            wheel.removeEventListener('transitionend', finish);
+            busy = false;
+            spin.disabled = false;
+            spin.textContent = 'GIRAR NOVAMENTE';
+        };
+        
+        wheel.addEventListener('transitionend', finish);
+        setTimeout(finish, 5400);
+    });
+})();
+</script>
+</body>
+</html>
