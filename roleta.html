@@ -44,8 +44,8 @@
         
         const offset = Number(cfg?.offset) || 0;
         
-        // Sorteia um tempo de giro entre 2000ms (2s) e 3000ms (3s)
-        const durationMs = Math.floor(Math.random() * 1000) + 2000;
+        // Sorteia um tempo de giro entre 3000ms (3s) e 5000ms (5s)
+        const durationMs = Math.floor(Math.random() * 2000) + 3000;
         const durationSec = (durationMs / 1000).toFixed(2);
         
         // Rotação: 3 a 5 voltas completas + um ângulo completamente aleatório de 0 a 359 graus
